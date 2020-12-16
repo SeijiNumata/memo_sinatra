@@ -1,0 +1,12 @@
+<div class="memo_subtitle">
+      <h2 class="index_title">メモ一覧</h2>
+
+      <a class="new_button" href="/memos/new">
+            <button type="button" class="btn btn-success">追加！</button>
+      </a>
+</div>
+<div class="memo_container">
+      <% @memos.each do |memo| %>
+      <a class="memo" href="/memos/<%= memo[1] %>"><%= memo[0]  %></a><br>
+      <% end %>
+</div>

@@ -1,0 +1,51 @@
+body {
+    padding: 11px;
+    margin-top: 10px;
+    margin-left: 10px;
+}
+
+.memo_subtitle {
+    display: flex
+}
+
+.index_title {
+    width: 160px
+}
+
+.new-content {
+    margin-bottom: 0px;
+}
+
+.button-wrapper {
+    display: flex;
+}
+
+.new_button {
+    display: block;
+    height: 40px;
+}
+
+.edit_link {
+    display: block;
+    margin-bottom: 10px;
+}
+
+.edit-button {
+    height: 40px;
+    margin-right: 10px;
+}
+
+.delete-button {
+    display: block;
+    height: 40px;
+}
+
+.memo_container {
+    margin-top: 10px;
+}
+
+.memo {
+    display: block;
+    margin-bottom: 1px;
+    height: 4px;
+}

@@ -1,0 +1,12 @@
+<p><%= @memo["title"] %></p>
+<p><%= @memo["content"] %></p>
+
+<a class="edit_link" href="/memos/<%= @memo["id"] %>/edit">
+    <button type="button" class="btn btn-success">編集</button>
+</a>
+
+<form action="/memos/<%= @memo["id"] %>" method="post">
+    <input type="hidden" name="_method" class="delete-button" value="delete">
+    <input type="submit" value="削除" button type="button" class="btn btn-danger delete-button">
+    </div>
+</form>
