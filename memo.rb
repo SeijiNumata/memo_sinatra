@@ -4,7 +4,8 @@ require 'sinatra'
 require 'sinatra/reloader'
 require 'json'
 
-get '/memos' do
+['/memos', '/'].each do |path|
+get path do
   @memo_files = Dir.glob('models/*').sort { |a, b| File.stat(a).birthtime <=> File.stat(b).birthtime }
   @memos = []
   @id = []
@@ -19,6 +20,7 @@ get '/memos' do
     end
   end
   erb :main
+end
 end
 
 get '/memos/new' do
