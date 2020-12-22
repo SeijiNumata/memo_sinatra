@@ -4,11 +4,11 @@ body {
     margin-left: 10px;
 }
 
-.memo_subtitle {
+.memo-subtitle {
     display: flex
 }
 
-.index_title {
+.index-title {
     width: 160px
 }
 
@@ -20,12 +20,11 @@ body {
     display: flex;
 }
 
-.new_button {
-    display: block;
-    height: 40px;
+.form-control {
+    width: 200px;
 }
 
-.edit_link {
+.edit-link {
     display: block;
     margin-bottom: 10px;
 }
@@ -40,12 +39,16 @@ body {
     height: 40px;
 }
 
-.memo_container {
+.memo-container {
     margin-top: 10px;
 }
 
 .memo {
     display: block;
-    margin-bottom: 1px;
-    height: 4px;
+    margin-bottom: 10px;
+    height: 20px;
+}
+
+.new-complete {
+    margin-top: 10px;
 }
