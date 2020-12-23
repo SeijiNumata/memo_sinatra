@@ -21,12 +21,11 @@ get '/memos' do
   memo_files.each do |memo_file|
     File.open(memo_file.to_s, 'r') do |j|
       hash = JSON.parse(j.read)
+      puts "hash=#{hash}"
       hash['title'] = '無題のタイトル' if hash['title'] == ''
-      title_id = []
-      title_id << hash['title']
-      title_id << hash['id']
-      @memos << title_id
+      @memos << hash
     end
+    puts "@memos=#{@memos}"
   end
   erb :main
 end
