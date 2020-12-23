@@ -45,14 +45,14 @@ post '/memos' do
 end
 
 get '/memos/:id' do
-  open("models/#{h(params[:id])}.json") do |io|
+  File.open("models/#{h(params[:id])}.json") do |io|
     @memo = JSON.parse(io.read)
   end
   erb :show
 end
 
 get '/memos/:id/edit' do
-  open("models/#{h(params[:id])}.json") do |io|
+  File.open("models/#{h(params[:id])}.json") do |io|
     @memo = JSON.parse(io.read)
   end
   erb :edit
