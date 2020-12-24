@@ -1,3 +1,5 @@
 .bundle
 vendor/
-models/
+
+path/to/*
+!.gitkeep
