@@ -21,11 +21,9 @@ get '/memos' do
   memo_files.each do |memo_file|
     File.open(memo_file.to_s, 'r') do |j|
       hash = JSON.parse(j.read)
-      puts "hash=#{hash}"
       hash['title'] = '無題のタイトル' if hash['title'] == ''
       @memos << hash
     end
-    puts "@memos=#{@memos}"
   end
   erb :main
 end
@@ -45,14 +43,14 @@ post '/memos' do
 end
 
 get '/memos/:id' do
-  File.open("models/#{h(params[:id])}.json") do |io|
+  File.open("models/#{params[:id]}.json") do |io|
     @memo = JSON.parse(io.read)
   end
   erb :show
 end
 
 get '/memos/:id/edit' do
-  File.open("models/#{h(params[:id])}.json") do |io|
+  File.open("models/#{params[:id]}.json") do |io|
     @memo = JSON.parse(io.read)
   end
   erb :edit

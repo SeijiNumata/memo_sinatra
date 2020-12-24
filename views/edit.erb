@@ -1,11 +1,11 @@
 <form action="/memos/<%= @memo["id"] %>" method="post">
 	<div class="form-group">
 		<label for="title">タイトル</label>
-		<input type="text" name="title" class="form-control" value="<%= @memo["title"] %>">
+		<input type="text" name="title" class="form-control" value="<%= h(@memo["title"]) %>">
 	</div>
 	<div class="form-group">
 		<label for="content">本文</label>
-	  <textarea name="content" class="form-control" ><%= @memo["content"] %></textarea>
+	  <textarea name="content" class="form-control" ><%= h(@memo["content"]) %></textarea>
 	</div>
 	<div class="button-wrapper">
 		<input type="hidden" name="_method" class="edit-button" value="patch">
