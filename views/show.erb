@@ -1,5 +1,5 @@
-<p><%= @memo["title"] %></p>
-<p><%= @memo["content"] %></p>
+<p><%= h(@memo["title"]) %></p>
+<p><%= h(@memo["content"]) %></p>
 
 <a class="edit-link" href="/memos/<%= @memo["id"] %>/edit">
   <button type="button" class="btn btn-success">編集</button>
