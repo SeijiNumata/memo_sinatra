@@ -1,7 +1,7 @@
 # memo_sinatra
 WebアプリからのDB利用
 # 実行前にローカル環境でmemosのデータベースを作ってください。
-host: 'localhost',   user: '',password: '',dbname: 'postgres'で動きます。
+host: 'localhost', user: '', password: '', dbname: 'postgres'で動きます。
 ```
 % psql postgres
 # create database memos;
