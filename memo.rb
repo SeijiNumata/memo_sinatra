@@ -14,9 +14,8 @@ end
 
 # IDを振り分ける（4桁）
 def id_countup
-  
   @connection.exec('SELECT * FROM memos ORDER BY id DESC LIMIT 1') do |result|
-    @count_id="0001" # reslutが存在しない場合、最初に登録するデータのid
+    @count_id = '0001' # reslutが存在しない場合、最初に登録するデータのid
     result.each do |count|
       count = count['id'].to_i + 1
       count = count.to_s
