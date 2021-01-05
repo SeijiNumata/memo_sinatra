@@ -6,27 +6,24 @@ require 'json'
 require 'pg'
 
 before do
-  @connection = PG.connect(host: ENV['DB_HOST'],
-                           user: ENV['DB_USER'],
-                           password: ENV['DB_PASSWORD'],
-                           dbname: 'postgres')
+  db_setup
 end
 
 after do
   @connection.finish
 end
 
-# def db_setup
-#   @connection = PG.connect(host: ENV["DB_HOST"],
-#                            user: ENV["DB_USER"],
-#                            password: ENV["DB_PASSWORD"],
-#                            dbname: 'postgres')
-# end
+def db_setup
+  @connection = PG.connect(host: ENV['DB_HOST'],
+                           user: ENV['DB_USER'],
+                           password: ENV['DB_PASSWORD'],
+                           dbname: 'postgres')
+end
 
 # IDを振り分ける（4桁）
 def id_countup
   @connection.exec('SELECT * FROM memos ORDER BY id DESC LIMIT 1') do |result|
-    @count_id = '0001' # reslutが存在しない場合、最初に登録するデータのid
+    @count_id = 1 # reslutが存在しない場合、最初に登録するデータのid
     result.each do |count|
       count = count['id'].to_i + 1
       @count_id = count.to_s
@@ -79,7 +76,7 @@ post '/memos' do # 新規追加
   title = '無題のタイトル' if @title == ''
   content = params[:content]
   write(@count_id, title, content)
-  @connection.finish
+  # @connection.finish
   redirect '/memos'
 end
 
