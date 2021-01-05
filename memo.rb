@@ -5,12 +5,23 @@ require 'sinatra/reloader'
 require 'json'
 require 'pg'
 
-def db_setup
-  @connection = PG.connect(host: 'localhost',
-                           user: '',
-                           password: '',
+before do
+  @connection = PG.connect(host: ENV['DB_HOST'],
+                           user: ENV['DB_USER'],
+                           password: ENV['DB_PASSWORD'],
                            dbname: 'postgres')
 end
+
+after do
+  @connection.finish
+end
+
+# def db_setup
+#   @connection = PG.connect(host: ENV["DB_HOST"],
+#                            user: ENV["DB_USER"],
+#                            password: ENV["DB_PASSWORD"],
+#                            dbname: 'postgres')
+# end
 
 # IDを振り分ける（4桁）
 def id_countup
@@ -18,8 +29,8 @@ def id_countup
     @count_id = '0001' # reslutが存在しない場合、最初に登録するデータのid
     result.each do |count|
       count = count['id'].to_i + 1
-      count = count.to_s
-      @count_id = '0' * (4 - count.length) + count
+      @count_id = count.to_s
+      # @count_id = '0' * (4 - count.length) + count
     end
   end
 end
@@ -46,14 +57,14 @@ end
 
 # トップページ
 get '/memos' do
-  db_setup
+  # db_setup
   @connection.exec('SELECT * FROM memos ORDER BY id ASC') do |result|
     @result = []
     result.each do |row|
       @result << row
     end
   end
-  @connection.finish
+  # @connection.finish
   erb :main
 end
 
@@ -62,7 +73,7 @@ get '/memos/new' do
 end
 
 post '/memos' do # 新規追加
-  db_setup
+  # db_setup
   id_countup
   title = params[:title]
   title = '無題のタイトル' if @title == ''
@@ -72,47 +83,51 @@ post '/memos' do # 新規追加
   redirect '/memos'
 end
 
-get '/memos/:id' do # 編集画面
-  db_setup
+get '/memos/:id' do # 詳細画面
+  # db_setup
   id = params[:id]
-  @connection.exec('SELECT * from memos WHERE id=($1);', [id]) do |result|
-    result.each do |row|
-      @memo = row
-    end
-  end
-  @connection.finish
+  search_memo = @connection.exec('SELECT * from memos WHERE id=($1);', [id])
+  puts @memo = search_memo[0]
+  # @connection.exec('SELECT * from memos WHERE id=($1);', [id]) do |result|
+  # result.each do |row|
+  #   @memo = row
+  # end
+  # end
+  # @connection.finish
   erb :show
 end
 
 get '/memos/:id/edit' do
-  db_setup
+  # # db_setup
   id = params[:id]
-  @connection.exec('SELECT * from memos WHERE id=($1);', [id]) do |result|
-    result.each do |row|
-      @memo = row
-    end
-  end
-  @connection.finish
+  search_memo = @connection.exec('SELECT * from memos WHERE id=($1);', [id])
+  puts @memo = search_memo[0]
+  # @connection.exec('SELECT * from memos WHERE id=($1);', [id]) do |result|
+  #   result.each do |row|
+  #     @memo = row
+  #   end
+  # end
+  # @connection.finish
   erb :edit
 end
 
 enable :method_override
 
 patch '/memos/:id' do
-  db_setup
+  # db_setup
   id = params[:id].to_s
   title = params[:title]
   title = '無題のタイトル' if title == ''
   content = params[:content]
   @connection.exec("UPDATE memos SET title=($1) WHERE id='#{id}';", [title])
   @connection.exec("UPDATE memos SET content=($1) WHERE id='#{id}';", [content])
-  @connection.finish
+  # @connection.finish
   redirect '/memos'
 end
 
 delete '/memos/:id' do # 削除
-  db_setup
+  # db_setup
   delete(params[:id].to_s)
-  @connection.finish
+  # @connection.finish
   redirect '/memos'
 end
