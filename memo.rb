@@ -27,7 +27,6 @@ def id_countup
     result.each do |count|
       count = count['id'].to_i + 1
       @count_id = count.to_s
-      # @count_id = '0' * (4 - count.length) + count
     end
   end
 end
