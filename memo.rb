@@ -60,7 +60,6 @@ get '/memos' do
       @result << row
     end
   end
-  # @connection.finish
   erb :main
 end
 
@@ -75,7 +74,6 @@ post '/memos' do # 新規追加
   title = '無題のタイトル' if @title == ''
   content = params[:content]
   write(@count_id, title, content)
-  # @connection.finish
   redirect '/memos'
 end
 
@@ -83,13 +81,6 @@ get '/memos/:id' do # 詳細画面
   # db_setup
   id = params[:id]
   search_memo = @connection.exec('SELECT * from memos WHERE id=($1);', [id])
-  puts @memo = search_memo[0]
-  # @connection.exec('SELECT * from memos WHERE id=($1);', [id]) do |result|
-  # result.each do |row|
-  #   @memo = row
-  # end
-  # end
-  # @connection.finish
   erb :show
 end
 
@@ -97,13 +88,7 @@ get '/memos/:id/edit' do
   # # db_setup
   id = params[:id]
   search_memo = @connection.exec('SELECT * from memos WHERE id=($1);', [id])
-  puts @memo = search_memo[0]
-  # @connection.exec('SELECT * from memos WHERE id=($1);', [id]) do |result|
-  #   result.each do |row|
-  #     @memo = row
-  #   end
-  # end
-  # @connection.finish
+  @memo = search_memo[0]
   erb :edit
 end
 
