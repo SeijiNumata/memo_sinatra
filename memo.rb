@@ -3,6 +3,43 @@
 require 'sinatra'
 require 'sinatra/reloader'
 require 'json'
+require 'pg'
+
+before do
+  db_setup
+end
+
+after do
+  @connection.finish
+end
+
+def db_setup
+  @connection = PG.connect(host: ENV['DB_HOST'],
+                           user: ENV['DB_USER'],
+                           password: ENV['DB_PASSWORD'],
+                           dbname: 'postgres')
+end
+
+# IDを振り分ける（4桁）
+def id_countup
+  @connection.exec('SELECT * FROM memos ORDER BY id DESC LIMIT 1') do |result|
+    @count_id = 1 # reslutが存在しない場合、最初に登録するデータのid
+    result.each do |count|
+      count = count['id'].to_i + 1
+      @count_id = count.to_s
+    end
+  end
+end
+
+# 書き込み
+def write(id, title, content)
+  @connection.exec('INSERT INTO memos VALUES ($1, $2, $3);', [id, title, content])
+end
+
+# 削除
+def delete(id)
+  @connection.exec('DELETE FROM memos WHERE id=($1);', [id])
+end
 
 helpers do
   def h(text)
@@ -15,14 +52,10 @@ get '/' do
 end
 
 get '/memos' do
-  # @memo_files = Dir.glob('models/*').sort { |a, b| File.stat(a).birthtime <=> File.stat(b).birthtime }
-  memo_files = Dir.glob('models/*').sort { |a, b| File.ctime(a) <=> File.ctime(b) }
-  @memos = []
-  memo_files.each do |memo_file|
-    File.open(memo_file.to_s, 'r') do |j|
-      hash = JSON.parse(j.read)
-      hash['title'] = '無題のタイトル' if hash['title'] == ''
-      @memos << hash
+  @connection.exec('SELECT * FROM memos ORDER BY id ASC') do |result|
+    @result = []
+    result.each do |row|
+      @result << row
     end
   end
   erb :main
@@ -33,44 +66,41 @@ get '/memos/new' do
 end
 
 post '/memos' do
+  id_countup
   title = params[:title]
+  title = '無題のタイトル' if @title == ''
   content = params[:content]
-  memo = { "id": SecureRandom.uuid, "title": title, "content": content }
-  File.open("models/#{memo[:id]}.json", 'w') do |io|
-    io.puts(JSON.pretty_generate(memo))
-  end
+  write(@count_id, title, content)
   redirect '/memos'
 end
 
 get '/memos/:id' do
-  File.open("models/#{params[:id]}.json") do |io|
-    @memo = JSON.parse(io.read)
-  end
+  id = params[:id]
+  search_memo = @connection.exec('SELECT * from memos WHERE id=($1);', [id])
+  @memo = search_memo[0]
   erb :show
 end
 
 get '/memos/:id/edit' do
-  File.open("models/#{params[:id]}.json") do |io|
-    @memo = JSON.parse(io.read)
-  end
+  id = params[:id]
+  search_memo = @connection.exec('SELECT * from memos WHERE id=($1);', [id])
+  @memo = search_memo[0]
   erb :edit
 end
 
 enable :method_override
 
 patch '/memos/:id' do
+  id = params[:id].to_s
   title = params[:title]
+  title = '無題のタイトル' if title == ''
   content = params[:content]
-  id = params['id']
-  memo = { "id": id, "title": title, "content": content }
-  File.open("models/#{id}.json", 'w') do |io|
-    io.puts(JSON.pretty_generate(memo))
-  end
-
+  @connection.exec("UPDATE memos SET title=($1) WHERE id='#{id}';", [title])
+  @connection.exec("UPDATE memos SET content=($1) WHERE id='#{id}';", [content])
   redirect '/memos'
 end
 
-delete '/memos/:id' do
-  File.delete("models/#{params[:id]}.json")
+delete '/memos/:id' do 
+  delete(params[:id].to_s)
   redirect '/memos'
 end

@@ -6,7 +6,7 @@
   </a>
 </div>
 <div class="memo-container">
-  <% @memos.each do |memo| %>
+  <% @result.each do |memo| %>
   <a class="memo" href="/memos/<%= memo["id"] %>"><%= h(memo["title"])  %></a>
   <% end %>
 </div>
