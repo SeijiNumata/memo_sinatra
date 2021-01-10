@@ -51,9 +51,7 @@ get '/' do
   redirect '/memos'
 end
 
-# トップページ
 get '/memos' do
-  # db_setup
   @connection.exec('SELECT * FROM memos ORDER BY id ASC') do |result|
     @result = []
     result.each do |row|
@@ -67,8 +65,7 @@ get '/memos/new' do
   erb :new
 end
 
-post '/memos' do # 新規追加
-  # db_setup
+post '/memos' do
   id_countup
   title = params[:title]
   title = '無題のタイトル' if @title == ''
@@ -77,15 +74,13 @@ post '/memos' do # 新規追加
   redirect '/memos'
 end
 
-get '/memos/:id' do # 詳細画面
-  # db_setup
+get '/memos/:id' do 
   id = params[:id]
   search_memo = @connection.exec('SELECT * from memos WHERE id=($1);', [id])
   erb :show
 end
 
 get '/memos/:id/edit' do
-  # # db_setup
   id = params[:id]
   search_memo = @connection.exec('SELECT * from memos WHERE id=($1);', [id])
   @memo = search_memo[0]
@@ -95,20 +90,16 @@ end
 enable :method_override
 
 patch '/memos/:id' do
-  # db_setup
   id = params[:id].to_s
   title = params[:title]
   title = '無題のタイトル' if title == ''
   content = params[:content]
   @connection.exec("UPDATE memos SET title=($1) WHERE id='#{id}';", [title])
   @connection.exec("UPDATE memos SET content=($1) WHERE id='#{id}';", [content])
-  # @connection.finish
   redirect '/memos'
 end
 
 delete '/memos/:id' do # 削除
-  # db_setup
   delete(params[:id].to_s)
-  # @connection.finish
   redirect '/memos'
 end
