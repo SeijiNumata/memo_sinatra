@@ -74,9 +74,10 @@ post '/memos' do
   redirect '/memos'
 end
 
-get '/memos/:id' do 
+get '/memos/:id' do
   id = params[:id]
   search_memo = @connection.exec('SELECT * from memos WHERE id=($1);', [id])
+  @memo = search_memo[0]
   erb :show
 end
 
@@ -99,7 +100,7 @@ patch '/memos/:id' do
   redirect '/memos'
 end
 
-delete '/memos/:id' do # 削除
+delete '/memos/:id' do 
   delete(params[:id].to_s)
   redirect '/memos'
 end
